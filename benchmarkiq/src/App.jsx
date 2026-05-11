@@ -21,9 +21,9 @@ import {
   X,
   Info,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import * as XLSX from "xlsx";
 
 /* ────────────────────────────────────────────────────────────────────────
    PLANET DDS BRAND
@@ -40,6 +40,13 @@ const C = {
   paper: "#F7FAFD",
   line: "#E4ECF6",
   mute: "#5B6B91",
+};
+
+// Band fills used only inside BenchmarkBand. 4x darker than STATUS.*.bg.
+const BAND_BG = {
+  AT_RISK: "#FBAF8F",
+  ON_TRACK: "#8FBFEF",
+  ELITE: "#87C387",
 };
 
 const STATUS = {
@@ -801,32 +808,32 @@ function BenchmarkBand({ kpi }) {
         {cfg.direction === "lower" ? (
           <>
             {/* Elite zone (left) */}
-            <div style={{ width: `${pElite}%`, background: STATUS.ELITE.bg }} />
+            <div style={{ width: `${pElite}%`, background: BAND_BG.ELITE }} />
             {/* On track */}
             <div
               style={{
                 width: `${pAtRisk - pElite}%`,
-                background: STATUS.ON_TRACK.bg,
+                background: BAND_BG.ON_TRACK,
               }}
             />
             {/* At risk */}
             <div
-              style={{ width: `${100 - pAtRisk}%`, background: STATUS.AT_RISK.bg }}
+              style={{ width: `${100 - pAtRisk}%`, background: BAND_BG.AT_RISK }}
             />
           </>
         ) : (
           <>
             <div
-              style={{ width: `${pAtRisk}%`, background: STATUS.AT_RISK.bg }}
+              style={{ width: `${pAtRisk}%`, background: BAND_BG.AT_RISK }}
             />
             <div
               style={{
                 width: `${pElite - pAtRisk}%`,
-                background: STATUS.ON_TRACK.bg,
+                background: BAND_BG.ON_TRACK,
               }}
             />
             <div
-              style={{ width: `${100 - pElite}%`, background: STATUS.ELITE.bg }}
+              style={{ width: `${100 - pElite}%`, background: BAND_BG.ELITE }}
             />
           </>
         )}
@@ -2294,63 +2301,63 @@ function PresentationExportTab({
   };
 
   const tryExport = async (kind) => {
-  const node = slideRef.current;
+    const node = slideRef.current;
 
-  if (!node) {
-    setExportMsg({
-      kind,
-      text: "No slide found to export.",
-    });
-    return;
-  }
-
-  try {
-    setExportMsg({
-      kind,
-      text: `Exporting ${kind.toUpperCase()}...`,
-    });
-
-    const canvas = await html2canvas(node, {
-      scale: 2,
-      backgroundColor: C.white,
-      useCORS: true,
-      logging: false,
-    });
-
-    const imgData = canvas.toDataURL("image/png");
-    const fileName = `BenchmarkIQ_Slide_${slide.id}`;
-
-    if (kind === "png") {
-      const link = document.createElement("a");
-      link.href = imgData;
-      link.download = `${fileName}.png`;
-      link.click();
+    if (!node) {
+      setExportMsg({
+        kind,
+        text: "No slide found to export.",
+      });
+      return;
     }
 
-    if (kind === "pdf") {
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: [canvas.width, canvas.height],
+    try {
+      setExportMsg({
+        kind,
+        text: `Exporting ${kind.toUpperCase()}...`,
       });
 
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-      pdf.save(`${fileName}.pdf`);
+      const canvas = await html2canvas(node, {
+        scale: 2,
+        backgroundColor: C.white,
+        useCORS: true,
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const fileName = `BenchmarkIQ_Slide_${slide.id}`;
+
+      if (kind === "png") {
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = `${fileName}.png`;
+        link.click();
+      }
+
+      if (kind === "pdf") {
+        const pdf = new jsPDF({
+          orientation: "landscape",
+          unit: "px",
+          format: [canvas.width, canvas.height],
+        });
+
+        pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+        pdf.save(`${fileName}.pdf`);
+      }
+
+      setExportMsg({
+        kind,
+        text: `${kind.toUpperCase()} export complete.`,
+      });
+
+      setTimeout(() => setExportMsg(null), 3000);
+    } catch (err) {
+      setExportMsg({
+        kind,
+        text: `Export failed: ${String(err.message || err)}`,
+      });
     }
-
-    setExportMsg({
-      kind,
-      text: `${kind.toUpperCase()} export complete.`,
-    });
-
-    setTimeout(() => setExportMsg(null), 3000);
-  } catch (err) {
-    setExportMsg({
-      kind,
-      text: `Export failed: ${String(err.message || err)}`,
-    });
-  }
-};
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -2423,16 +2430,10 @@ function PresentationExportTab({
 
       {/* Slide preview */}
       <div
-        ref={slideRef}
         style={{ position: "relative", width: "100%", maxWidth: presentationMode ? "100%" : 1180, margin: presentationMode ? 0 : "0 auto" }}
       >
-        <SlideFrame
-  slide={slide.id}
-  totalSlides={SLIDE_DEFINITIONS.length}
-  slideRefSetter={slideRef}
->
-  {renderSlide()}
-</SlideFrame>
+        <div ref={slideRef}>{renderSlide()}</div>
+        {/* Side arrows */}
         <button
           onClick={() => setSlideIdx((i) => Math.max(0, i - 1))}
           disabled={slideIdx === 0}
