@@ -799,38 +799,46 @@ function BenchmarkBand({ kpi }) {
   const valuePct = pct(kpi.value);
 
   return (
-    <div style={{ width: "100%" }}>
+  <div style={{ width: "100%" }}>
+    <div
+      style={{
+        position: "relative",
+        height: 20,
+        borderRadius: 999,
+      }}
+    >
       <div
         style={{
-          position: "relative",
+          position: "absolute",
+          top: 5,
+          left: 0,
+          right: 0,
           height: 10,
           borderRadius: 999,
+          overflow: "hidden",
           display: "flex",
           background: C.line,
         }}
       >
-  </div>
         {cfg.direction === "lower" ? (
           <>
-            {/* Elite zone (left) */}
             <div style={{ width: `${pElite}%`, background: BAND_BG.ELITE }} />
-            {/* On track */}
             <div
               style={{
                 width: `${pAtRisk - pElite}%`,
                 background: BAND_BG.ON_TRACK,
               }}
             />
-            {/* At risk */}
             <div
-              style={{ width: `${100 - pAtRisk}%`, background: BAND_BG.AT_RISK }}
+              style={{
+                width: `${100 - pAtRisk}%`,
+                background: BAND_BG.AT_RISK,
+              }}
             />
           </>
         ) : (
           <>
-            <div
-              style={{ width: `${pAtRisk}%`, background: BAND_BG.AT_RISK }}
-            />
+            <div style={{ width: `${pAtRisk}%`, background: BAND_BG.AT_RISK }} />
             <div
               style={{
                 width: `${pElite - pAtRisk}%`,
@@ -838,14 +846,17 @@ function BenchmarkBand({ kpi }) {
               }}
             />
             <div
-              style={{ width: `${100 - pElite}%`, background: BAND_BG.ELITE }}
+              style={{
+                width: `${100 - pElite}%`,
+                background: BAND_BG.ELITE,
+              }}
             />
           </>
         )}
-        {/* Value marker */}
-        {/* Value marker */}
-        <div
-          style={{
+      </div>
+
+      <div
+        style={{
           position: "absolute",
           top: "50%",
           left: `${valuePct}%`,
@@ -859,24 +870,25 @@ function BenchmarkBand({ kpi }) {
           zIndex: 5,
           pointerEvents: "none",
         }}
-      >
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: 6,
-          fontSize: 10,
-          color: C.mute,
-          fontWeight: 600,
-        }}
-      >
-        <span>{cfg.benchmarks.atRisk}</span>
-        <span>{cfg.benchmarks.onTrack}</span>
-        <span>{cfg.benchmarks.elite}</span>
-      </div>
+      />
     </div>
-  );
+
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginTop: 4,
+        fontSize: 10,
+        color: C.mute,
+        fontWeight: 600,
+      }}
+    >
+      <span>{cfg.benchmarks.atRisk}</span>
+      <span>{cfg.benchmarks.onTrack}</span>
+      <span>{cfg.benchmarks.elite}</span>
+    </div>
+  </div>
+);
 }
 
 /* ────────────────────────────────────────────────────────────────────────
