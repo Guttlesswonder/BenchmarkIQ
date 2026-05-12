@@ -805,11 +805,20 @@ function BenchmarkBand({ kpi }) {
           position: "relative",
           height: 10,
           borderRadius: 999,
-          overflow: "hidden",
           display: "flex",
           background: C.line,
         }}
       >
+          <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      borderRadius: 999,
+      overflow: "hidden",
+      display: "flex",
+    }}
+  >
+  </div>
         {cfg.direction === "lower" ? (
           <>
             {/* Elite zone (left) */}
