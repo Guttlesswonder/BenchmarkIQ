@@ -1682,8 +1682,9 @@ function DashboardTab({ results, score, counts, focus, location, period }) {
       </div>
 
       {/* KPI groups */}
-      {Object.entries(grouped).map(([category, items]) => (
-        <div key={category}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+  {Object.entries(grouped).map(([category, items]) => (
+    <div key={category}>
           <SectionHeader
             title={category}
             subtitle={`${items.length} metrics tracked`}
@@ -1820,27 +1821,20 @@ function DashboardTab({ results, score, counts, focus, location, period }) {
 
 function SectionHeader({ title, subtitle }) {
   return (
-    <div style={{ marginBottom: 22, marginTop: 18 }}>
+    <div style={{ marginBottom: 14 }}>
       <div
         style={{
           fontSize: 18,
           fontWeight: 700,
           color: C.darkBlue,
           letterSpacing: -0.2,
-          lineHeight: 1.3,
+          lineHeight: 1.25,
         }}
       >
         {title}
       </div>
       {subtitle && (
-        <div
-          style={{
-            fontSize: 12.5,
-            color: C.mute,
-            marginTop: 4,
-            lineHeight: 1.4,
-          }}
-        >
+        <div style={{ fontSize: 12.5, color: C.mute, marginTop: 2 }}>
           {subtitle}
         </div>
       )}
