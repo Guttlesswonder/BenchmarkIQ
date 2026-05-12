@@ -809,15 +809,6 @@ function BenchmarkBand({ kpi }) {
           background: C.line,
         }}
       >
-          <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      borderRadius: 999,
-      overflow: "hidden",
-      display: "flex",
-    }}
-  >
   </div>
         {cfg.direction === "lower" ? (
           <>
@@ -852,19 +843,23 @@ function BenchmarkBand({ kpi }) {
           </>
         )}
         {/* Value marker */}
+        {/* Value marker */}
         <div
           style={{
-            position: "absolute",
-            top: -3,
-            left: `calc(${valuePct}% - 8px)`,
-            width: 16,
-            height: 16,
-            borderRadius: "50%",
-            background: C.darkBlue,
-            border: "3px solid #fff",
-            boxShadow: "0 1px 4px rgba(0,15,96,0.35)",
-          }}
-        />
+          position: "absolute",
+          top: "50%",
+          left: `${valuePct}%`,
+          width: 18,
+          height: 18,
+          borderRadius: "50%",
+          background: C.darkBlue,
+          border: "3px solid #fff",
+          boxShadow: "0 2px 6px rgba(0,15,96,0.35)",
+          transform: "translate(-50%, -50%)",
+          zIndex: 5,
+          pointerEvents: "none",
+        }}
+      >
       </div>
       <div
         style={{
