@@ -1820,19 +1820,27 @@ function DashboardTab({ results, score, counts, focus, location, period }) {
 
 function SectionHeader({ title, subtitle }) {
   return (
-    <div style={{ marginBottom: 14 }}>
+    <div style={{ marginBottom: 22, marginTop: 18 }}>
       <div
         style={{
           fontSize: 18,
           fontWeight: 700,
           color: C.darkBlue,
           letterSpacing: -0.2,
+          lineHeight: 1.3,
         }}
       >
         {title}
       </div>
       {subtitle && (
-        <div style={{ fontSize: 12.5, color: C.mute, marginTop: 2 }}>
+        <div
+          style={{
+            fontSize: 12.5,
+            color: C.mute,
+            marginTop: 4,
+            lineHeight: 1.4,
+          }}
+        >
           {subtitle}
         </div>
       )}
