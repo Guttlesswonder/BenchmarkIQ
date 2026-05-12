@@ -24,6 +24,11 @@ import {
 import * as XLSX from "xlsx";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+// TEMPORARY hackathon demo dataset. Safe to remove when live API is wired up.
+import {
+  ENGINEER_SAMPLE_DATA,
+  buildResultsFromPrecalculated,
+} from "./engineerSampleData";
 
 /* ────────────────────────────────────────────────────────────────────────
    PLANET DDS BRAND
@@ -2172,7 +2177,7 @@ function DataSourcesTab({ onUpload, dataSource, validation, fileName }) {
           >
             Source:{" "}
             <span style={{ color: C.darkBlue }}>
-              {dataSource === "uploaded" ? "Uploaded workbook" : "Mock data"}
+              {dataSource === "uploaded" ? "Uploaded workbook" : "Sample data"}
             </span>
           </div>
         </div>
@@ -2615,8 +2620,10 @@ export default function BenchmarkIQ() {
   const [tab, setTab] = useState("dashboard");
   const [location, setLocation] = useState("ALL");
   const [period, setPeriod] = useState("90");
-  const [data, setData] = useState(MOCK_DATA);
-  const [dataSource, setDataSource] = useState("mock");
+// Default to engineer-provided sample dataset. Uploaded workbooks switch
+  // this back to a raw-row workbook & flow through calculateKPIs() unchanged.
+  const [data, setData] = useState(ENGINEER_SAMPLE_DATA);
+  const [dataSource, setDataSource] = useState("sample");
   const [validation, setValidation] = useState(null);
   const [fileName, setFileName] = useState("");
   const [presentationMode, setPresentationMode] = useState(false);
@@ -2630,7 +2637,25 @@ export default function BenchmarkIQ() {
     }
   }, []);
 
-  const results = useMemo(() => calculateKPIs(data, location), [data, location]);
+// Branch on data shape: precalc demo data uses the adapter, raw-row
+  // workbooks (uploaded Excel) use the original calculateKPIs() path.
+  const results = useMemo(
+    () =>
+      data && data.__precalc
+        ? buildResultsFromPrecalculated(data, location, KPI_CONFIG)
+        : calculateKPIs(data, location),
+    [data, location]
+  );
+
+  // Location list comes from the precalc data when available, otherwise
+  // falls back to the static LOCATIONS used by the raw-row path.
+  const locations = useMemo(
+    () =>
+      data && data.__precalc && Array.isArray(data.locations)
+        ? data.locations
+        : LOCATIONS,
+    [data]
+  );  
   const score = useMemo(() => calculateHealthScore(results), [results]);
   const counts = useMemo(() => statusCounts(results), [results]);
   const focus = useMemo(() => getTopFocusAreas(results, 3), [results]);
@@ -2699,7 +2724,7 @@ export default function BenchmarkIQ() {
                 label="Location"
                 value={location}
                 onChange={setLocation}
-                options={LOCATIONS.map((l) => ({ value: l.id, label: l.name }))}
+                options={locations.map((l) => ({ value: l.id, label: l.name }))}
               />
               <Select
                 label="Period"
