@@ -163,7 +163,7 @@ export const ENGINEER_SAMPLE_DATA = {
   offices: ENGINEER_SAMPLE_OFFICES,
   // Location list derived from the offices, with "All Locations" prepended
   locations: [
-    { id: "ALL", name: "All Locations" },
+    { id: "ALL", name: "DCA - All Locations" },
     ...ENGINEER_SAMPLE_OFFICES.map((o) => ({
       id: String(o.oid),
       name: o.name,
