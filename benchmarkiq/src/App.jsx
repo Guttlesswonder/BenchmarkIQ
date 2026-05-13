@@ -1698,7 +1698,7 @@ function DashboardTab({ results, score, counts, focus, location, period }) {
       </div>
 
       {/* KPI groups */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 24, marginTop: 50 }}>
   {Object.entries(grouped).map(([category, items]) => (
     <div key={category}>
           <SectionHeader
