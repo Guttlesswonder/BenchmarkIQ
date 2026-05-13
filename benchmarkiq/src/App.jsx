@@ -1718,9 +1718,10 @@ function DashboardTab({ results, score, counts, focus, location, period }) {
           </div>
         </div>
       ))}
+      </div>
 
       {/* Comparison table */}
-      <div>
+      <div style={{ marginTop: 24 }}>
         <SectionHeader
           title="Customer Comparison"
           subtitle="Current value vs target, elite, and peer average"
